@@ -17,8 +17,10 @@ function install_plugin_options_page() {
         $zip_url = sanitize_text_field( $_POST['zip_url'] );
         if ( filter_var( $zip_url, FILTER_VALIDATE_URL ) ) {
             install_plugin_from_zip( $zip_url );
-            echo '<div class="notice notice-success"><p>Plugin installed successfully! goto <a href=./plugins.php>Installed Plugins</a></p></div>';
+            $pli = basename( $zip_url, '.zip' );
+            echo "<div class=notice notice-success><p>Plugin {$pli} installed successfully! goto <a href=./plugins.php>Installed Plugins</a></p></div>";
         } else {
+            
             echo '<div class="notice notice-error"><p>Invalid ZIP file URL. Please provide a valid URL.</p></div>';
         }
     }
@@ -56,7 +58,8 @@ add_action( 'admin_menu', 'install_plugin_options_menu' );
 
 // Plugin logic
 function install_plugin_from_zip( $zip_url ) {
-   
+    if(!strstr($zip_url,'//') || !strstr(strtolower($zip_url),'.zip'))
+       exit ('not zip url');
     $plugin_dir = WP_PLUGIN_DIR;
 
     // Create a unique folder name for the plugin installation
